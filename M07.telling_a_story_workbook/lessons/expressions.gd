@@ -1,16 +1,9 @@
 extends Control
 
-@onready var body: TextureRect = %body
-@onready var expression: TextureRect = %expression
-@onready var button_sophia: Button = %ButtonSophia
-@onready var button_pink: Button = %ButtonPink
-@onready var button_regular: Button = %ButtonRegular
-@onready var button_sad: Button = %ButtonSad
-@onready var button_happy: Button = %ButtonHappy
-
 var bodies := {
 	"sophia": preload("res://assets/sophia.png"),
-	"pink": preload("res://assets/pink.png")
+	"pink": preload("res://assets/pink.png"),
+	"''NL''": preload("res://assets/i-drew-northernlion-v0-npk2pf6kgnje1.webp")
 }
 
 var expressions := {
@@ -19,22 +12,37 @@ var expressions := {
 	"sad": preload("res://assets/emotion_sad.png"),
 }
 
-func _ready() -> void:
-	body.texture = bodies["pink"]
-	expression.texture = expressions["happy"]
+@onready var body: TextureRect = %body
+@onready var expression: TextureRect = %expression
+@onready var row_bodies: HBoxContainer = $VBoxContainer/RowBodies
+@onready var row_expressions: HBoxContainer = $VBoxContainer/RowExpressions
 
-	button_sophia.pressed.connect(func() -> void:
-		body.texture = bodies["sophia"]
-	)
-	button_pink.pressed.connect(func() -> void:
-		body.texture = bodies["pink"]
-	)
-	button_regular.pressed.connect(func() -> void:
-		expression.texture = expressions["regular"]
-	)
-	button_sad.pressed.connect(func() -> void:
-		expression.texture = expressions["sad"]
-	)
-	button_happy.pressed.connect(func() -> void:
-		expression.texture = expressions["happy"]
-	)
+func _ready() -> void:
+	create_buttons()
+
+func create_button_pink() -> void:
+	var button := Button .new()
+	row_bodies.add_child(button)
+	
+	var key := "pink"
+	button.text = key.capitalize()
+	button.pressed.connect(func() -> void:
+		body.texture = bodies[key]
+)
+
+func create_buttons() -> void:
+	for current_body: String in bodies:
+		var button := Button.new()
+		row_bodies.add_child(button)
+		button.text = current_body.capitalize()
+		button.pressed.connect(func() -> void:
+			body.texture = bodies[current_body]
+		)
+		
+	for current_expression: String in expressions:
+		var button := Button.new()
+		row_expressions.add_child(button)
+		button.text = current_expression.capitalize()
+		button.pressed.connect(func() -> void:
+			expression.texture = expressions[current_expression]
+		)
